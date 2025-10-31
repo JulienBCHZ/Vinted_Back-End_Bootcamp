@@ -5,7 +5,6 @@ const cloudinary = require("cloudinary").v2;
 const cors = require("cors");
 const app = express();
 
-// import des fichiers "Routes"
 const userRoutes = require("./routes/user");
 const offerRoutes = require("./routes/offer");
 
@@ -14,7 +13,6 @@ app.use(express.json());
 
 mongoose.connect(process.env.MONGODB_URI);
 
-// Connexion au compte cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -25,11 +23,7 @@ app.get("/", (req, res) => {
   res.json({ message: "We are in !" });
 });
 
-// 🛑🛑 CRUD USER 🛑🛑
-
 app.use(userRoutes);
-
-// 🛑🛑 CRUD OFFER 🛑🛑
 
 app.use(offerRoutes);
 
