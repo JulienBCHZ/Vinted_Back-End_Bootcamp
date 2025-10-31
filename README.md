@@ -2,4 +2,4 @@
 
 **Bonjour**
 
-Voici mon projet **Front-end** de la réplique du site _Vinted_
+Voici mon projet **Back-end** de la réplique du site _Vinted_
