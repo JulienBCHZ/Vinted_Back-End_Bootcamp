@@ -18,7 +18,6 @@ router.post(
     try {
       //   const date = new Date();
 
-      // Destructuring
       const { title, description, price, condition, city, brand, size, color } =
         req.body;
 
@@ -26,13 +25,21 @@ router.post(
         return res.status(406).json({ message: "Not acceptable" });
       }
 
-      // UPLOAD de l'image sur cloudinary
-      // Transforme mon image de buffer à string
-      const fileToString = convertToBase64(req.files.image);
-      // Upload et hebergement de mon image sur cloudinary
-      const cloudinaryResponse = await cloudinary.uploader.upload(fileToString);
+      // UPLOAD des images
+      let allCloudinaryResponses = [];
+      for (i = 0; i < req.files.image.length; i++) {
+        const fileToString = convertToBase64(req.files.image[i]);
+        const cloudinaryResponse = await cloudinary.uploader.upload(
+          fileToString
+        );
+        allCloudinaryResponses.push(cloudinaryResponse);
+      }
+      // const fileToString = convertToBase64(req.files.image);
+      // const cloudinaryResponse = await cloudinary.uploader.upload(
+      //   fileToString
+      // );
 
-      // Crea de l'offre reçu en Body
+      // Crea de l'offre
       const newOffer = new Offer({
         product_name: title,
         product_description: description,
@@ -44,7 +51,7 @@ router.post(
           { COLOR: color },
           { CITY: city },
         ],
-        product_image: cloudinaryResponse,
+        product_image: allCloudinaryResponses,
         owner: req.user._id,
       });
 

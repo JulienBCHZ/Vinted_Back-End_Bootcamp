@@ -15,16 +15,25 @@ router.post("/user/signup", async (req, res) => {
   try {
     if (!req.body.email) {
       return res.status(403).json({ message: "Email needed" });
+    } else if (!req.body.username) {
+      return res.status(403).json({ message: "Username needed" });
+    } else if (!req.body.password) {
+      return res.status(403).json({ message: "Choose a password" });
     }
-    // verification si un compte avec l'email donné existe déjà
-    const mailToCheck = await User.findOne({ email: req.body.email });
-    if (mailToCheck) {
+
+    const userToCheck = await User.findOne({ email: req.body.email });
+    if (userToCheck) {
       return res.json({
         message: "Unauthorized",
       });
-    } else if (!req.body.username) {
-      return res.status(403).json({ message: "Username needed" });
     }
+    const usernameToCheck = await User.findOne({
+      account: { username: req.body.username },
+    });
+    if (usernameToCheck) {
+      return res.json({ message: "Username unavailable" });
+    }
+
     // Password encryption
     const salt = uid2(16);
 
@@ -44,7 +53,6 @@ router.post("/user/signup", async (req, res) => {
       salt: salt,
     });
 
-    // res.json({ message: "Please wait for acount creation..." });
     await newUser.save();
     res.status(201).json({
       _id: newUser._id,
@@ -56,7 +64,7 @@ router.post("/user/signup", async (req, res) => {
   }
 });
 
-// LOGIN user acount (comme READ mais avec envoi des id de connexion avec un Body)
+// LOGIN user acount
 router.post("/user/login", async (req, res) => {
   try {
     const userLogin = await User.findOne({ email: req.body.email });
