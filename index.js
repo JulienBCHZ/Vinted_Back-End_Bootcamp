@@ -11,7 +11,7 @@ const offerRoutes = require("./routes/offer");
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("mongodb://localhost:27017/vinted");
+mongoose.connect(process.env.MONGODB_URI);
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -32,6 +32,6 @@ app.all(/.*/, (req, res) => {
   res.json({ message: "Route does not exist" });
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
   console.log("Server started 🚀");
 });
