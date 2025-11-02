@@ -30,7 +30,8 @@ router.post(
       for (i = 0; i < req.files.image.length; i++) {
         const fileToString = convertToBase64(req.files.image[i]);
         const cloudinaryResponse = await cloudinary.uploader.upload(
-          fileToString
+          fileToString,
+          { asset_folder: `/${req.user.account.username}/${title}` }
         );
         allCloudinaryResponses.push(cloudinaryResponse);
       }
@@ -39,7 +40,6 @@ router.post(
       //   fileToString
       // );
 
-      // Crea de l'offre
       const newOffer = new Offer({
         product_name: title,
         product_description: description,
